@@ -1,21 +1,8 @@
-# Utiliser l'image de base Alpine
-FROM alpine:latest
-
-# Installer python3, pip et bash
+# Étape 1 : Installer les dépendances système
 RUN apk add --no-cache --update python3 py3-pip bash
 
-# Créer et activer un environnement virtuel
-RUN python3 -m venv /venv
-ENV PATH="/venv/bin:$PATH"
+# Étape 2 : Créer un environnement virtuel
+RUN python3 -m venv /env
 
-# Copier les fichiers nécessaires
-ADD ./webapp/requirements.txt /tmp/requirements.txt
-
-# Installer les dépendances dans l'environnement virtuel
-RUN pip install --no-cache-dir -r /tmp/requirements.txt
-
-# Copier le reste de votre code (si nécessaire)
-# ADD ./webapp /app
-
-# Définir le point d'entrée du conteneur
-# CMD ["python3", "/app/your_app.py"]
+# Étape 3 : Activer l'environnement virtuel et installer les dépendances
+RUN /env/bin/pip install --no-cache-dir -q -r /tmp/requirements.txt
