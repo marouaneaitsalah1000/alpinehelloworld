@@ -1,25 +1,21 @@
-#Grab the latest alpine image
+# Utiliser l'image de base Alpine
 FROM alpine:latest
 
-# Install python and pip
+# Installer python3, pip et bash
 RUN apk add --no-cache --update python3 py3-pip bash
+
+# Créer et activer un environnement virtuel
+RUN python3 -m venv /venv
+ENV PATH="/venv/bin:$PATH"
+
+# Copier les fichiers nécessaires
 ADD ./webapp/requirements.txt /tmp/requirements.txt
 
-# Install dependencies
-RUN pip3 install --no-cache-dir -q -r /tmp/requirements.txt
+# Installer les dépendances dans l'environnement virtuel
+RUN pip install --no-cache-dir -r /tmp/requirements.txt
 
-# Add our code
-ADD ./webapp /opt/webapp/
-WORKDIR /opt/webapp
+# Copier le reste de votre code (si nécessaire)
+# ADD ./webapp /app
 
-# Expose is NOT supported by Heroku
-# EXPOSE 5000 		
-
-# Run the image as a non-root user
-RUN adduser -D myuser
-USER myuser
-
-# Run the app.  CMD is required to run on Heroku
-# $PORT is set by Heroku			
-CMD gunicorn --bind 0.0.0.0:$PORT wsgi 
-
+# Définir le point d'entrée du conteneur
+# CMD ["python3", "/app/your_app.py"]
